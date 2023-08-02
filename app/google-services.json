@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "56425808778",
+    "firebase_url": "https://strivefurniture-default-rtdb.firebaseio.com",
+    "project_id": "strivefurniture",
+    "storage_bucket": "strivefurniture.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56425808778:android:10300fd981d92ba6873e73",
+        "android_client_info": {
+          "package_name": "com.empire.strivefurniture"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56425808778-rfbtuor3d3khncc0kk2h8hh57pv6ndae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa1urwDdWIsuvp1LuCoJJHSYWFDQGqna0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56425808778-rfbtuor3d3khncc0kk2h8hh57pv6ndae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

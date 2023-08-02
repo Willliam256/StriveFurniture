@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Strive Furniture</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">Name</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in_tv">Already have an account? Sign In</string>
+    <string name="phone">Phone number</string>
+    <string name="location">Location</string>
+    <string name="sign_in">Sign In</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account? Sign Up</string>
+    <string name="search">Search</string>
+    <string name="pick_item_image">Click to select the item image</string>
+    <string name="upload">Upload</string>
+    <string name="description_of_item">Description of item</string>
+    <string name="price">Price</string>
+    <string name="item_image">item image</string>
+    <string name="update_profile">Update profile</string>
+    <string name="reset_password">Reset password</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="your_products">Your products</string>
+    <string name="contact_seller">Contact seller</string>
+    <string name="edit_product">Edit product</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="cart">Cart</string>
+</resources>
