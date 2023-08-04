@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.itemPages.AddItemFragment">
 
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,24 +39,78 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:orientation="vertical">
 
+            <!--  Layout to display the selected image content          -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/showSelectedId"
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:text="Selected Product(s)"
+                    app:layout_constraintBottom_toTopOf="@+id/imageSwitcher"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/nextImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/baseline_delete_sweep_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageSwitcher"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/previousImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/baseline_delete_sweep_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageSwitcher"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <ImageSwitcher
+                    android:id="@+id/imageSwitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="25dp"
+                    android:layout_marginTop="32dp"
+                    android:inAnimation="@android:anim/fade_in"
+                    android:outAnimation="@android:anim/fade_out"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.52"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/image_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp">
-
                     <ImageView
-                        android:id="@+id/image"
+                        android:id="@+id/imageView2"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:scaleType="centerCrop"
