@@ -7,6 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageSwitcher
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,15 +35,83 @@ class ItemDetailFragment : Fragment() {
     private lateinit var cartItems: List<FurnitureItem>
     private var context: Context? = null
 
+    private lateinit var nextImage: ImageView
+    private lateinit var previousImage: ImageView
+    private lateinit var imageSwitcherDetail: ImageSwitcher
+    var position = 0 //Current position of the selected Image
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentItemDetailBinding.inflate(layoutInflater)
-        initViews()
         context = binding.root.context
+
+
+        /**
+         * Initializing the variables of the Image display for the selected images
+         */
+        nextImage = binding.nextImageId
+        previousImage = binding.previousImageId
+
+        // Initialize the ImageSwitcher
+        imageSwitcherDetail = binding.detailImageSwitcherId
+        imageSwitcherDetail.setFactory {
+            val imageView = ImageView(requireContext())
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView
+        }
+
+        /**
+         * Calling the initView Function to inialize all the items
+         */
+        initViews()
+        /**
+         * Set on next and previous btns click to navigate btn previous and next images selected
+         */
+        // Set next and previous buttons click listeners
+        binding.nextImageId.setOnClickListener {
+            if (position < item.photo.size - 1) {
+                position++
+                setImagesInImageSwitcher(item.photo, position)
+            } else {
+                binding.previousImageId.visibility = View.VISIBLE
+                binding.nextImageId.visibility = View.GONE
+                Toast.makeText(requireContext(), "Done", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        binding.previousImageId.setOnClickListener {
+            if (position > 0) {
+                position--
+                setImagesInImageSwitcher(item.photo, position)
+            } else {
+                binding.previousImageId.visibility = View.GONE
+                binding.nextImageId.visibility = View.VISIBLE
+                Toast.makeText(requireContext(), "Done", Toast.LENGTH_LONG).show()
+            }
+        }
+
         return binding.root
     }
+
+    /**
+     * Load image into the Image Switcher
+     */
+    private fun setImagesInImageSwitcher(imageUrls: List<String>, position: Int) {
+        val imageUrl = imageUrls[position]
+        loadImageToImageSwitcher(imageUrl)
+    }
+
+
+    private fun loadImageToImageSwitcher(imageUrl: String) {
+        Glide.with(requireContext())
+            .load(imageUrl)
+            .into(imageSwitcherDetail.currentView as ImageView)
+    }
+    //End Loading Image to the Image Switcher
+
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initViews() {
@@ -53,7 +125,6 @@ class ItemDetailFragment : Fragment() {
                     binding.addToCartButton.text = "Remove from cart"
                     if (contxt != null) binding.addToCartButton.icon =
                         contxt.getDrawable(R.drawable.baseline_remove_shopping_cart_24)
-
                 } else {
                     binding.addToCartButton.text = "Add to cart"
                     if (contxt != null) binding.addToCartButton.icon =
@@ -101,7 +172,7 @@ class ItemDetailFragment : Fragment() {
                 }
             }
 
-            Glide.with(root.context).load(item.photo[0]).into(image)
+            setImagesInImageSwitcher(item.photo, position)
             name.text = item.name
             price.text = formatCurrency(item.price) + " UGX"
             description.text = item.description

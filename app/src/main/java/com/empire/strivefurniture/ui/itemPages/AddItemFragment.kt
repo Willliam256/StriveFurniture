@@ -99,6 +99,9 @@ class AddItemFragment : Fragment() {
         return binding.root
     }
 
+
+
+
     /**
      * on the result after selecting the Images
      */
