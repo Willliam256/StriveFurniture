@@ -33,8 +33,6 @@ class HomeFragment : Fragment() {
         init()
         return binding.root
     }
-
-
     private fun init() {
         binding.apply {
             Glide.with(requireContext()).load(vm.user.value?.profileImage)

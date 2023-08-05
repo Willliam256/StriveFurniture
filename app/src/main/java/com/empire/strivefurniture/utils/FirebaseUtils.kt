@@ -21,11 +21,11 @@ object FirebaseUtils {
     val profileImagePaths = FirebaseStorage.getInstance().getReference("Avatars")
 
     val usersDatabasePath = FirebaseDatabase.getInstance().getReference("Users")
-    fun deleteItem(item: FurnitureItem) {
-        furnitureItemDatabasePaths.child(item.id).removeValue().addOnCompleteListener {
-            if (it.isSuccessful) furnitureItemStoragePaths.child(item.photo).delete()
-        }
-    }
+//    fun deleteItem(item: FurnitureItem) {
+//        furnitureItemDatabasePaths.child(item.id).removeValue().addOnCompleteListener {
+//            if (it.isSuccessful) furnitureItemStoragePaths.child(item.photo).delete()
+//        }
+//    }
 
     fun removeCartItem(item: FurnitureItem): Boolean {
         Log.d("CartItems", "Cart item removed: ${item.name}")

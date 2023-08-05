@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridView
 import android.widget.ImageSwitcher
 import android.widget.ImageView
 import android.widget.Toast
@@ -16,20 +15,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.empire.strivefurniture.R
-import com.empire.strivefurniture.adapters.ImageAdapter
 import com.empire.strivefurniture.databinding.FragmentAddItemBinding
 import com.empire.strivefurniture.models.FurnitureItem
 import com.empire.strivefurniture.models.User
-import com.empire.strivefurniture.utils.FirebaseUtils.furnitureItemDatabasePaths
+import com.empire.strivefurniture.utils.FirebaseUtils
 import com.empire.strivefurniture.utils.FirebaseUtils.furnitureItemStoragePaths
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.UUID
 
 class AddItemFragment : Fragment() {
     private lateinit var binding: FragmentAddItemBinding
@@ -37,7 +34,7 @@ class AddItemFragment : Fragment() {
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private var imageUri: Uri? = null
     private val args: AddItemFragmentArgs by navArgs()
-    private var imageDownloadUrl: String = ""
+    private var imageDownloadUrls = ArrayList<String>()
 
     //Image Picker variables
     private val selectedImagesList = ArrayList<Uri>()
@@ -60,7 +57,7 @@ class AddItemFragment : Fragment() {
          * Initializing the variables of the Image display for the selected images
          */
         nextImage = binding.nextImage
-        previousImage  = binding.previousImage
+        previousImage = binding.previousImage
         imageSwitcher = binding.imageSwitcher
         showSelectedImages = binding.showSelectedId
 
@@ -77,23 +74,23 @@ class AddItemFragment : Fragment() {
          * Set on next and previous btns click to navigate btn previous and next images selected
          */
         nextImage.setOnClickListener {
-            if (position < selectedImagesList.size-1){
+            if (position < selectedImagesList.size - 1) {
                 position++
                 imageSwitcher.setImageURI(selectedImagesList[position])
-            }
-            else{
-                position = 0
+            } else {
+                binding.previousImage.visibility = View.VISIBLE
+                binding.nextImage.visibility = View.GONE
                 Toast.makeText(requireContext(), "Done", Toast.LENGTH_LONG).show()
             }
         }
 
         previousImage.setOnClickListener {
-            if (position > 0){
+            if (position > 0) {
                 position--
                 imageSwitcher.setImageURI(selectedImagesList[position])
-            }
-            else{
-                position = selectedImagesList.size
+            } else {
+                binding.previousImage.visibility = View.GONE
+                binding.nextImage.visibility = View.VISIBLE
                 Toast.makeText(requireContext(), "Done", Toast.LENGTH_LONG).show()
             }
         }
@@ -118,6 +115,7 @@ class AddItemFragment : Fragment() {
                 position = 0
 
             } else if (data?.data != null) { // Single image selected
+                //Don't Display the navigation arrows on the image switcher
                 val imageUri = data.data!!
                 selectedImagesList.add(imageUri)
                 //set image to image switcher
@@ -125,7 +123,7 @@ class AddItemFragment : Fragment() {
                 position = 0
             }
             //Check if there is any selected Image(s) and the show the switcher
-            if (selectedImagesList.size > 0){
+            if (selectedImagesList.size > 0) {
                 showSelectedImages.visibility = View.VISIBLE
             }
         }
@@ -151,7 +149,7 @@ class AddItemFragment : Fragment() {
 
             /**
              * Open a multiple image picker on clicking the image card of Id @image
-              */
+             */
             imageCard.setOnClickListener {
                 openImagePicker()
             }
@@ -166,7 +164,10 @@ class AddItemFragment : Fragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        startActivityForResult(Intent.createChooser(intent, "Select Images"), PICK_IMAGES_REQUEST_CODE)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Images"),
+            PICK_IMAGES_REQUEST_CODE
+        )
     }
 
 //    var getImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -190,64 +191,66 @@ class AddItemFragment : Fragment() {
 
             if (user != null) {
                 Log.d(TAG, "User is not null")
-                if (imageUri != null) {
-                    Log.d(TAG, "ImageUri ==> $imageUri")
-                    furnitureItemStoragePaths.child(itemId).putFile(imageUri!!)
-                        .addOnSuccessListener {
-                            it.storage.downloadUrl.addOnSuccessListener {
-                                imageDownloadUrl = it.toString()
-                                Log.d(TAG, "ImageDownloadUrl ==> $imageDownloadUrl ")
+                if (selectedImagesList != emptyList<List<Uri>>()) {
+                    for (imageUri in selectedImagesList) {
+                        Log.d(TAG, "ImageUri ==> $imageUri")
+                        furnitureItemStoragePaths.child("$itemId/${UUID.randomUUID()}")
+                            .putFile(imageUri)
+                            .addOnSuccessListener {
+                                it.storage.downloadUrl.addOnSuccessListener { uri ->
+                                    imageDownloadUrls.add(uri.toString())
+                                    Log.d(TAG, "ImageDownloadUrl ==> $imageDownloadUrls ")
 
-                                //adding item
+                                    //adding item
+                                    if (imageDownloadUrls.size == selectedImagesList.size) {
+                                        val item = FurnitureItem(
+                                            id = itemId,
+                                            name = name,
+                                            price = price,
+                                            location = user!!.location,
+                                            seller = user!!.id,
+                                            description = description,
+                                            photo = imageDownloadUrls.ifEmpty { args.item!!.photo },
+                                            contact = user!!.phoneNumber,
+                                            sellerName = user!!.name,
+                                            uploadTime = if (args.isEditing) args.item!!.uploadTime else System.currentTimeMillis()
+                                                .toString()
+                                        )
 
-                                if (imageDownloadUrl.isNotEmpty() || args.item?.photo != null) {
+                                        FirebaseUtils.furnitureItemDatabasePaths.child(itemId)
+                                            .setValue(item).addOnSuccessListener {
+                                                progressIndicator.visibility = View.GONE
+                                                Log.d(TAG, "Item upload successful : $item")
+                                                uploadButton.isEnabled = true
 
-                                    val item = FurnitureItem(
-                                        id = itemId,
-                                        name = name,
-                                        price = price,
-                                        location = user!!.location,
-                                        seller = user!!.id,
-                                        description = description,
-                                        photo = imageDownloadUrl.ifEmpty { args.item!!.photo },
-                                        contact = user!!.phoneNumber,
-                                        sellerName = user!!.name,
-                                        uploadTime = if (args.isEditing) args.item!!.uploadTime else System.currentTimeMillis()
-                                            .toString()
+                                                Toast.makeText(
+                                                    requireActivity(),
+                                                    "Item upload successful",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                findNavController().navigate(
+                                                    R.id.action_addItemFragment_to_homeFragment
+                                                )
+                                            }.addOnFailureListener {e->
+                                                progressIndicator.visibility = View.GONE
+                                                uploadButton.isEnabled = true
+                                                Log.d(TAG, "Upload failed: ${e.message}")
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Item upload failed. Please check your network and try again.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                            }
+
+                                    } else Log.d(
+                                        TAG,
+                                        "ImageDownloadUrl ==> $imageDownloadUrls or ItemPhoto ==> ${args.item?.photo}"
                                     )
-
-                                    furnitureItemDatabasePaths.child(itemId)
-                                        .setValue(item).addOnSuccessListener {
-                                            progressIndicator.visibility = View.GONE
-                                            Log.d(TAG, "Item upload successful : $item")
-                                            uploadButton.isEnabled = true
-
-                                            Toast.makeText(
-                                                requireActivity(),
-                                                "Item upload successful",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            findNavController().navigate(
-                                                R.id.action_addItemFragment_to_homeFragment
-                                            )
-                                        }.addOnFailureListener {
-                                            progressIndicator.visibility = View.GONE
-                                            uploadButton.isEnabled = true
-                                            Log.d(TAG, "Upload failed: ${it.message}")
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Item upload failed. Please check your network and try again.",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        }
-
-                                } else Log.d(
-                                    TAG,
-                                    "ImageDownloadUrl ==> $imageDownloadUrl or ItemPhoto ==> ${args.item?.photo}"
-                                )
+                                }
                             }
-                        }
+                    }
+
                 } else Log.d(TAG, "ImageUri is null")
 
             } else Log.d(TAG, "User is null")

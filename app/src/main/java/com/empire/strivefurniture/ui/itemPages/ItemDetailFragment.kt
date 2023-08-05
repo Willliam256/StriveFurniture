@@ -101,7 +101,7 @@ class ItemDetailFragment : Fragment() {
                 }
             }
 
-            Glide.with(root.context).load(item.photo).into(image)
+            Glide.with(root.context).load(item.photo[0]).into(image)
             name.text = item.name
             price.text = formatCurrency(item.price) + " UGX"
             description.text = item.description

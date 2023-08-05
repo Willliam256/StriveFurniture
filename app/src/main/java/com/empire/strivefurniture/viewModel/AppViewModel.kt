@@ -62,16 +62,54 @@ class AppViewModel : ViewModel() {
     private fun getFurnitureItems() {
         furnitureItemDatabasePaths.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val fItems = snapshot.children.mapNotNull { it.getValue(FurnitureItem::class.java) }
+                val fItems = mutableListOf<FurnitureItem>()
+
+                for (productSnapshot in snapshot.children) {
+                    val id = productSnapshot.key
+                    val name = productSnapshot.child("name").getValue(String::class.java)
+                    val price = productSnapshot.child("price").getValue(String::class.java)
+                    val location = productSnapshot.child("location").getValue(String::class.java)
+                    val seller = productSnapshot.child("seller").getValue(String::class.java)
+                    val description = productSnapshot.child("description").getValue(String::class.java)
+                    val contact = productSnapshot.child("contact").getValue(String::class.java)
+                    val sellerName = productSnapshot.child("sellerName").getValue(String::class.java)
+                    val uploadTime = productSnapshot.child("uploadTime").getValue(String::class.java)
+
+                    val imagesSnapshot = productSnapshot.child("photo")
+                    val imageUrls = arrayListOf<String>()
+
+                    for (imageSnapshot in imagesSnapshot.children) {
+                        val imageUrl = imageSnapshot.getValue(String::class.java)
+                        if (imageUrl != null) {
+                            imageUrls.add(imageUrl)
+                        }
+                    }
+
+
+                    if (id != null && name != null && price != null && location != null && seller != null &&
+                        description != null && contact != null && sellerName != null && uploadTime != null) {
+                        val furnitureItem = FurnitureItem(
+                            id, name, price, location, seller, description,
+                            imageUrls, contact, sellerName, uploadTime
+                        )
+                        fItems.add(furnitureItem)
+                    }
+                }
+
                 _items.value = fItems
                 Log.d(AddItemFragment.TAG, "Emitted Items list size: ${fItems.size}")
-
             }
 
             override fun onCancelled(error: DatabaseError) {
+                // Handle cancellation
             }
         })
     }
+
+
+
+
+
 
     private fun getCartItems() {
         Log.d("CartItems", "Gettting cart items")

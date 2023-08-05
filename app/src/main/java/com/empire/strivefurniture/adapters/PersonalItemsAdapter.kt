@@ -2,7 +2,6 @@ package com.empire.strivefurniture.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
@@ -13,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.empire.strivefurniture.R
 import com.empire.strivefurniture.databinding.RvItemBinding
 import com.empire.strivefurniture.models.FurnitureItem
-import com.empire.strivefurniture.utils.FirebaseUtils.deleteItem
+
 import com.empire.strivefurniture.utils.MethodUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -39,7 +38,7 @@ class MyViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding
             nameView.text = item.name
             priceView.text = MethodUtils.formatCurrency(item.price) + " UGX"
             locationView.text = item.location
-            Glide.with(root.context).load(item.photo).into(imageView)
+            Glide.with(root.context).load(item.photo[0]).into(binding.imageView)
 
             container.setOnClickListener {
                 Navigation.findNavController(itemView)
@@ -61,7 +60,7 @@ class MyViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding
                 dialog.dismiss()
             }
             setPositiveButton("Ok") { _, _ ->
-                deleteItem(item)
+//                deleteItem(item)
             }
         }.show()
     }

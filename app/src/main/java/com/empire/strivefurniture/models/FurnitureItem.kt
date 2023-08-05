@@ -11,10 +11,10 @@ data class FurnitureItem(
     val location: String,
     val seller: String,
     val description: String,
-    val photo: String,
+    val photo: ArrayList<String>,
     val contact: String,
     val sellerName: String,
     val uploadTime: String
 ) : Parcelable {
-    constructor() : this("", "", "", "", "", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", "", arrayListOf(""), "", "", "")
 }

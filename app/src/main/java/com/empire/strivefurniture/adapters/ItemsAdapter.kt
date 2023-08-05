@@ -35,7 +35,7 @@ class MyViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding
             nameView.text = item.name
             priceView.text = formatCurrency(item.price) + " UGX"
             locationView.text = item.location
-            Glide.with(root.context).load(item.photo).into(imageView)
+            Glide.with(root.context).load(item.photo[0]).into(imageView)
 
             container.setOnClickListener {
                 Navigation.findNavController(itemView)
