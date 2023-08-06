@@ -32,7 +32,6 @@ class AddItemFragment : Fragment() {
     private lateinit var binding: FragmentAddItemBinding
     private var user: User? = null
     private val currentUser = FirebaseAuth.getInstance().currentUser
-    private var imageUri: Uri? = null
     private val args: AddItemFragmentArgs by navArgs()
     private var imageDownloadUrls = ArrayList<String>()
 
@@ -137,6 +136,7 @@ class AddItemFragment : Fragment() {
             if (args.isEditing) {
                 name.setText(args.item!!.name)
                 price.setText(args.item!!.price)
+                itemQtyId.setText(args.item!!.itemQty)
                 description.setText(args.item!!.description)
 
                 uploadButton.text = "Update"
@@ -190,6 +190,7 @@ class AddItemFragment : Fragment() {
         binding.apply {
             val name = name.text.toString()
             val price = price.text.toString()
+            val qty = itemQtyId.text.toString()
             val description = description.text.toString()
 
             if (user != null) {
@@ -210,6 +211,7 @@ class AddItemFragment : Fragment() {
                                             id = itemId,
                                             name = name,
                                             price = price,
+                                            itemQty = qty,
                                             location = user!!.location,
                                             seller = user!!.id,
                                             description = description,

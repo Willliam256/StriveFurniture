@@ -89,8 +89,12 @@ class ProfileFragment : Fragment() {
                     profileRv.visibility = View.VISIBLE
                 }
             }
-            vm.myCartedItems.observe(requireActivity()) {
-                binding.cartedItems.text = it.toString()
+//            vm.myCartedItems.observe(requireActivity()) {
+//                binding.cartedItems.text = it.toString()
+//            }
+
+            vm.items.observe(requireActivity()) {
+                binding.cartedItems.text = it.size.toString()
             }
             vm.mySoldItems.observe(requireActivity()) {
                 binding.soldItems.text = it.toString()

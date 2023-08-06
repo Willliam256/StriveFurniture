@@ -68,6 +68,7 @@ class AppViewModel : ViewModel() {
                     val id = productSnapshot.key
                     val name = productSnapshot.child("name").getValue(String::class.java)
                     val price = productSnapshot.child("price").getValue(String::class.java)
+                    val itemQty = productSnapshot.child("itemQty").getValue(String::class.java)
                     val location = productSnapshot.child("location").getValue(String::class.java)
                     val seller = productSnapshot.child("seller").getValue(String::class.java)
                     val description = productSnapshot.child("description").getValue(String::class.java)
@@ -86,10 +87,10 @@ class AppViewModel : ViewModel() {
                     }
 
 
-                    if (id != null && name != null && price != null && location != null && seller != null &&
+                    if (id != null && name != null && price != null && itemQty != null && location != null && seller != null &&
                         description != null && contact != null && sellerName != null && uploadTime != null) {
                         val furnitureItem = FurnitureItem(
-                            id, name, price, location, seller, description,
+                            id, name, price, itemQty, location, seller, description,
                             imageUrls, contact, sellerName, uploadTime
                         )
                         fItems.add(furnitureItem)

@@ -108,7 +108,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp">
+                    android:layout_margin="8dp"
+                    android:gravity="center">
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="60dp"
@@ -141,12 +142,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/price"
+                <!-- Item Price and Quantity Layout -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/price"
-                    android:inputType="number" />
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/price"
+                        android:inputType="number"
+                        android:layout_weight="1"/>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/itemQtyId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Quantity"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"/>
+
+                </LinearLayout>
+
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
