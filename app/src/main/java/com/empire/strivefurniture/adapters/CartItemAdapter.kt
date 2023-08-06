@@ -34,7 +34,7 @@ class CartItemAdapter :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FurnitureItem) {
             binding.apply {
-                Glide.with(root.context).load(item.photo[1]).into(image)
+                Glide.with(root.context).load(item.photo[0]).into(image)
                 name.text = item.name
                 price.text = formatCurrency(item.price)
                 sellerName.text = "Sold by : ${item.sellerName}"

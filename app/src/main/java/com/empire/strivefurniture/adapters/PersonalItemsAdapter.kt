@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,11 +13,14 @@ import com.bumptech.glide.Glide
 import com.empire.strivefurniture.R
 import com.empire.strivefurniture.databinding.RvItemBinding
 import com.empire.strivefurniture.models.FurnitureItem
+import com.empire.strivefurniture.ui.itemPages.ItemDetailViewModel
 
 import com.empire.strivefurniture.utils.MethodUtils
+import com.empire.strivefurniture.viewModel.AppViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PersonalItemsAdapter : ListAdapter<FurnitureItem, MyViewHolder>(MyDiffUtilCallback()) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
             binding = RvItemBinding.inflate(
@@ -33,11 +37,14 @@ class PersonalItemsAdapter : ListAdapter<FurnitureItem, MyViewHolder>(MyDiffUtil
 }
 
 class MyViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+
     fun bind(item: FurnitureItem) {
         binding.apply {
             nameView.text = item.name
             priceView.text = MethodUtils.formatCurrency(item.price) + " UGX"
             locationView.text = item.location
+            inventoryId.text = "${item.itemQty} Products"
             Glide.with(root.context).load(item.photo[0]).into(binding.imageView)
 
             container.setOnClickListener {
