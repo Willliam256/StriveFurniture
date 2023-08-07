@@ -44,7 +44,7 @@ class MyViewHolder(val binding: RvItemBinding) : RecyclerView.ViewHolder(binding
             nameView.text = item.name
             priceView.text = MethodUtils.formatCurrency(item.price) + " UGX"
             locationView.text = item.location
-            inventoryId.text = "${item.itemQty} Products"
+            inventoryId.text = "Stock  :  ${item.itemQty} Items"
             Glide.with(root.context).load(item.photo[0]).into(binding.imageView)
 
             container.setOnClickListener {
